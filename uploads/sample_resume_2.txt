@@ -1,0 +1,19 @@
+Alice Smith
+alice.smith@example.org | 098-765-4321
+Batch of 2023
+
+Education:
+XYZ Institute of Technology
+B.E. in Information Technology
+CGPA: 9.1
+
+Skills:
+C, Python, Django, HTML, CSS, JavaScript, PostgreSQL, Linux, Git, Jenkins, Terraform, OOP
+
+Projects:
+E-commerce Platform
+- Built backend using Python and Django.
+- Managed database using PostgreSQL.
+
+Certifications:
+Red Hat Certified System Administrator

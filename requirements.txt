@@ -1,0 +1,7 @@
+streamlit==1.36.0
+pdfplumber
+python-docx
+pandas
+openpyxl
+rapidfuzz
+nltk
