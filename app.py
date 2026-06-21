@@ -6,6 +6,61 @@ from utils import calculate_match_score, export_to_excel, export_to_csv, ELIGIBI
 
 st.set_page_config(page_title="Resume Analyzer", layout="wide")
 
+# Premium Custom CSS
+st.markdown("""
+<style>
+    /* Main Background & Text */
+    .stApp {
+        background-color: #0d1117;
+        color: #c9d1d9;
+        font-family: 'Inter', sans-serif;
+    }
+    
+    /* Headers */
+    h1, h2, h3 {
+        color: #58a6ff !important;
+        font-weight: 700 !important;
+    }
+    
+    /* Metrics */
+    div[data-testid="stMetricValue"] {
+        color: #3fb950;
+        font-size: 2rem;
+        font-weight: 800;
+        background: -webkit-linear-gradient(#3fb950, #2ea043);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    div[data-testid="stMetricLabel"] {
+        color: #8b949e;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+    
+    /* Buttons */
+    .stButton > button {
+        background-color: #238636;
+        color: white;
+        border: 1px solid rgba(240, 246, 252, 0.1);
+        border-radius: 6px;
+        transition: all 0.2s ease-in-out;
+        font-weight: 600;
+    }
+    .stButton > button:hover {
+        background-color: #2ea043;
+        border-color: #8b949e;
+        transform: translateY(-2px);
+    }
+    
+    /* DataFrame Styling */
+    .stDataFrame {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+</style>
+""", unsafe_allow_html=True)
+
 # Initialize session state for cached parsed resumes
 if "parsed_resumes" not in st.session_state:
     st.session_state["parsed_resumes"] = {}
@@ -37,15 +92,12 @@ with st.sidebar:
             
     st.divider()
     
-    st.header("2. Search & Filters")
-    search_query = st.text_input("Search (Name, Email, Phone, College)")
-    
-    st.subheader("Filter by Skills")
+    st.header("2. Filter by Programming Languages")
     selected_skills = []
     
-    for category, skills_dict in SKILL_CATEGORIES.items():
-        skills_list = list(skills_dict.keys())
-        selected = st.multiselect(f"{category}", skills_list)
+    if "Programming Languages" in SKILL_CATEGORIES:
+        skills_list = list(SKILL_CATEGORIES["Programming Languages"].keys())
+        selected = st.multiselect("Programming Languages", skills_list)
         selected_skills.extend(selected)
 
 # Main Content
@@ -68,17 +120,6 @@ for filename, parsed_data in st.session_state["parsed_resumes"].items():
 
 df = pd.DataFrame(data)
 
-# Apply Search Filter
-if search_query:
-    query = search_query.lower()
-    # Fill NaN values with empty string for safe searching
-    df_search = df.fillna("")
-    df = df[
-        df_search["Name"].str.lower().str.contains(query) |
-        df_search["Email"].str.lower().str.contains(query) |
-        df_search["Phone"].str.lower().str.contains(query) |
-        df_search["College"].str.lower().str.contains(query)
-    ]
 
 # Dashboard Metrics
 st.subheader("Dashboard Overview")

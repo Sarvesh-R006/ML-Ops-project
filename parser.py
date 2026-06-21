@@ -102,40 +102,24 @@ def extract_education_details(text):
 
 def extract_skills(text):
     text_lower = text.lower()
-    tokens = re.split(r'[\s,;|/()]+', text_lower)
-    bigrams = [" ".join(tokens[i:i+2]) for i in range(len(tokens)-1)]
-    trigrams = [" ".join(tokens[i:i+3]) for i in range(len(tokens)-2)]
-    
-    all_tokens = tokens + bigrams + trigrams
-    
     extracted_skills = set()
     
     for category, skills in SKILL_CATEGORIES.items():
         for canonical, aliases in skills.items():
-            found = False
             for alias in aliases:
-                # Use rapidfuzz for matching
+                escaped_alias = re.escape(alias)
                 if len(alias) <= 2 or alias in ["c++", "c#", ".net"]:
-                    # exact regex match for short things to avoid false positives
-                    escaped_alias = re.escape(alias)
                     if alias in ["c++", "c#", ".net"]:
                         pattern = rf'(?:^|[\s,;()/]){escaped_alias}(?:[\s,;()/]|$)'
                     else:
                         pattern = rf'\b{escaped_alias}\b'
-                        
-                    if re.search(pattern, text_lower):
-                        extracted_skills.add(canonical)
-                        found = True
-                        break
                 else:
-                    match = process.extractOne(alias, all_tokens, scorer=fuzz.ratio)
-                    if match and match[1] >= 90:
-                        extracted_skills.add(canonical)
-                        found = True
-                        break
-            if found:
-                continue
-                
+                    pattern = rf'\b{escaped_alias}\b'
+                    
+                if re.search(pattern, text_lower):
+                    extracted_skills.add(canonical)
+                    break
+                    
     return list(extracted_skills) if extracted_skills else ["Not Found"]
 
 def extract_projects(text):
